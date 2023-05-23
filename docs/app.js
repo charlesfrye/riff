@@ -2,6 +2,7 @@ const backendUrl = "https://charlesfrye--riff.modal.run";
 
 document.addEventListener("DOMContentLoaded", () => {
   const button = document.querySelector("button");
+  const body = document.querySelector("body");
 
   async function runInference() {
     const response = await fetch(backendUrl, {
@@ -12,14 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const responseJson = await response.json();
-    const body = document.querySelector("body");
+    const audioUrl = responseJson.url;
     // add audio with controls
     const audioElement = document.createElement("audio");
-    audioElement.src = responseJson.url;
+    audioElement.src = audioUrl;
     audioElement.type = "audio/mpeg";
     audioElement.controls = true;
 
     body.appendChild(audioElement);
   }
+
   button.addEventListener("click", runInference);
 });
