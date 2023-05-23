@@ -42,3 +42,15 @@ repos:
     hooks:
       - id: prettier
         types_or: [css, javascript, html]
+
+  # eslint for js style linting
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: "v8.41.0"  # Use the sha / tag you want to point at
+    hooks:
+    - id: eslint
+      additional_dependencies:
+        - eslint-config-airbnb-base@15.0.0
+        - eslint-config-prettier@8.8.0
+        - eslint-plugin-import@2.27.5
+        - stylelint@15.6.2
+        - stylelint-config-standard@33.0.0
