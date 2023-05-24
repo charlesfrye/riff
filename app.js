@@ -138,6 +138,25 @@ async function setPlaceholders() {
   });
 }
 
+function setDefaults() {
+  // Set default values
+  const defaultSeed = 117;
+  const defaultDenoise = 0.8;
+  const defaultGuidance = 7.0;
+  const defaultNumInferenceSteps = 50;
+  // Set inferenceInput to default values
+  inferenceInput.setSeed(defaultSeed);
+  inferenceInput.setDenoise(defaultDenoise);
+  inferenceInput.setGuidance(defaultGuidance);
+  inferenceInput.setNumInferenceSteps(defaultNumInferenceSteps);
+  // Set input box values to default values
+  document.querySelector("#seed-input").value = defaultSeed;
+  document.querySelector("#denoise-input").value = defaultDenoise;
+  document.querySelector("#guidance-input").value = defaultGuidance;
+  document.querySelector("#num-inference-steps-input").value =
+    defaultNumInferenceSteps;
+}
+
 // Adding buttons
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#set-prompt-button").addEventListener("click", () => {
@@ -187,4 +206,5 @@ document.addEventListener("DOMContentLoaded", () => {
       );
       inferenceInput.setNumInferenceSteps(numInferenceSteps);
     });
+  setDefaults();
 });
