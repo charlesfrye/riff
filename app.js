@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
         num_inference_steps: 50, // int
 
         // Seed image # TODO what does this one look like?
-        seed_image: undefined, // ?
+        seed_audio: undefined, // ?
       }),
     });
 
@@ -102,10 +102,31 @@ inferenceInput.setNegativePrompt = (text) => {
 // User input for denoising strength
 inferenceInput.setDenoise = (denoise) => {
   const parsedFloat = Number.parseFloat(denoise);
-  if (!Number.isNaN(parsedFloat)) {
+  if (!Number.isNaN(parsedFloat) && parsedFloat >= 0) {
     inferenceInput.denoise = parsedFloat;
     console.log(inferenceInput);
   } else {
-    console.error("Input must be a float");
+    console.error("Input must be a positive float");
+  }
+};
+
+// User input for guidance strength
+inferenceInput.setGuidance = (guidance) => {
+  const parsedFloat = Number.parseFloat(guidance);
+  if (!Number.isNaN(parsedFloat) && parsedFloat >= 0) {
+    inferenceInput.guidance = parsedFloat;
+    console.log(inferenceInput);
+  } else {
+    console.error("Input must be a positive float");
+  }
+};
+
+// User input for number of inference steps
+inferenceInput.setNumInferenceSteps = (numInferenceSteps) => {
+  if (Number.isInteger(numInferenceSteps) && numInferenceSteps >= 0) {
+    inferenceInput.numInferenceSteps = numInferenceSteps;
+    console.log(inferenceInput);
+  } else {
+    console.error("Input must be an integer.");
   }
 };
