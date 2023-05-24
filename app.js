@@ -39,15 +39,13 @@ document.addEventListener("DOMContentLoaded", () => {
 // User input for prompt
 inferenceInput.setPrompt = (text) => {
   const promptInput = document.querySelector("#prompt-input");
-  if (
-    typeof text === "string" &&
-    text.trim().length > 0 &&
-    Number.isNaN(text)
-  ) {
+  if (typeof text === "string" && text.trim().length > 0) {
     inferenceInput.prompt = text;
     promptInput.classList.remove("error-input");
   } else {
+    delete inferenceInput.prompt;
     promptInput.classList.add("error-input");
+    console.log("Invalid input: Please enter a non-empty string value.");
   }
 };
 
