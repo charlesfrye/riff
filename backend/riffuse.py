@@ -237,7 +237,7 @@ class RiffusionPipeline(DiffusionPipeline):
         text_embedding = embed_start
 
         # Image latents
-        init_image_torch = preprocess_image(inputs.init_image).to(
+        init_image_torch = preprocess_image(inputs.initImage).to(
             device=self.device, dtype=embed_start.dtype
         )
         init_latent_dist = self.vae.encode(init_image_torch).latent_dist
@@ -251,9 +251,9 @@ class RiffusionPipeline(DiffusionPipeline):
             init_latents=init_latents,
             generator=generator,
             strength=inputs.denoising,
-            num_inference_steps=inputs.num_inference_steps,
+            num_inference_steps=inputs.numInferenceSteps,
             guidance_scale=inputs.guidance,
-            negative_prompt=inputs.negative_prompt,
+            negative_prompt=inputs.negativePrompt,
         )
 
         return outputs["images"][0]
