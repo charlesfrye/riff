@@ -38,83 +38,96 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // User input for prompt
 inferenceInput.setPrompt = (text) => {
-  if (typeof text === "string" && text.trim().length > 0) {
+  const promptInput = document.querySelector("#prompt-input");
+  if (
+    typeof text === "string" &&
+    text.trim().length > 0 &&
+    Number.isNaN(text)
+  ) {
     inferenceInput.prompt = text;
-    console.log(inferenceInput);
+    promptInput.classList.remove("error-input");
   } else {
-    console.error("Prompt must be a non-empty string");
+    promptInput.classList.add("error-input");
   }
 };
 
 // User input for seed
 inferenceInput.setSeed = (seed) => {
+  const seedInput = document.querySelector("#seed-input");
   if (Number.isInteger(seed)) {
     inferenceInput.seed = seed;
-    console.log(inferenceInput);
+    seedInput.classList.remove("error-input");
   } else {
-    console.error("Input must be an integer.");
+    seedInput.classList.add("error-input");
   }
 };
 
 // User input for negative prompt (optional)
 inferenceInput.setNegativePrompt = (text) => {
+  const negativePromptInput = document.querySelector("#negative-prompt-input");
   if (typeof text === "string") {
     if (text.length > 0) {
       inferenceInput.negativePrompt = text;
+      negativePromptInput.classList.remove("error-input");
     } else {
       delete inferenceInput.negativePrompt;
-      console.log("Deleted negative prompt");
+      negativePromptInput.classList.remove("error-input");
     }
-    console.log(inferenceInput);
   } else {
-    console.error("Prompt must be a string");
+    negativePromptInput.classList.add("error-input");
   }
 };
 
 // User input for denoising strength
 inferenceInput.setDenoise = (denoise) => {
+  const denoiseInput = document.querySelector("#denoise-input");
   const parsedFloat = Number.parseFloat(denoise);
   if (!Number.isNaN(parsedFloat) && parsedFloat >= 0) {
     inferenceInput.denoise = parsedFloat;
-    console.log(inferenceInput);
+    denoiseInput.classList.remove("error-input");
   } else {
-    console.error("Input must be a positive float");
+    denoiseInput.classList.add("error-input");
   }
 };
 
 // User input for guidance strength
 inferenceInput.setGuidance = (guidance) => {
+  const guidanceInput = document.querySelector("#guidance-input");
   const parsedFloat = Number.parseFloat(guidance);
   if (!Number.isNaN(parsedFloat) && parsedFloat >= 0) {
     inferenceInput.guidance = parsedFloat;
-    console.log(inferenceInput);
+    guidanceInput.classList.remove("error-input");
   } else {
-    console.error("Input must be a positive float");
+    guidanceInput.classList.add("error-input");
   }
 };
 
 // User input for number of inference steps
 inferenceInput.setNumInferenceSteps = (numInferenceSteps) => {
+  const numInferenceStepsInput = document.querySelector(
+    "#num-inference-steps-input"
+  );
   if (Number.isInteger(numInferenceSteps) && numInferenceSteps >= 0) {
     inferenceInput.numInferenceSteps = numInferenceSteps;
-    console.log(inferenceInput);
+    numInferenceStepsInput.classList.remove("error-input");
   } else {
-    console.error("Input must be an integer.");
+    numInferenceStepsInput.classList.add("error-input");
   }
 };
 
 // User input for initial audio
 inferenceInput.setInitAudio = (file) => {
+  const audioFileInput = document.querySelector("#audio-file-input");
   if (file instanceof File && file.type.startsWith("audio/")) {
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64data = reader.result;
       inferenceInput.initAudio = base64data;
-      console.log(inferenceInput);
+      audioFileInput.classList.remove("error-input");
     };
     reader.readAsDataURL(file);
   } else {
-    console.error("Input must be a File.");
+    audioFileInput.classList.add("error-input");
   }
 };
 
