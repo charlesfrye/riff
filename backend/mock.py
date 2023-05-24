@@ -8,7 +8,7 @@ with open("test.m4a.b64", "r") as f:
 # build a request that looks like an InferenceRequest
 data = {
     "initAudio": init_audio,
-    "prompt": "Star Wars",
+    "prompt": "lofi beat to study and relax to",
     "seed": 117,
     "denoising": 0.75,
     "guidance": 7.0,
