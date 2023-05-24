@@ -1,4 +1,6 @@
 """Modal app for prompt-guided audio-to-audio transformation."""
+from pathlib import Path
+
 import modal
 
 image = (
@@ -22,6 +24,9 @@ image = (
     .apt_install("ffmpeg")  # system lib dependencies for riffusion inference
 )
 
+volume = modal.SharedVolume().persist("riffusion-models")
+MODEL_DIR = Path("/model")
+
 stub = modal.Stub(
     name="riffusion",
     secrets=[
@@ -30,36 +35,31 @@ stub = modal.Stub(
     ],
     mounts=[
         # we make our local modules available to the containers
-        *modal.create_package_mounts(module_names=["riffuse", "utils"])
+        *modal.create_package_mounts(module_names=["riffuse", "utils"]),
     ],
 )
 
 
-@stub.function(image=image)
+@stub.function(image=image, gpu="A10G", shared_volumes={str(MODEL_DIR): volume})
 @modal.web_endpoint(method="POST", label="riff")
 def inference(request_config: dict):
-    testing = True
-
     from utils import InferenceInput
 
     # parse out inference configuration from request
     init_audio = base64_to_audio(request_config.pop("initAudio"))
-    # init_image = audio_to_image(init_audio)
-    if not testing:
-        init_image = audio_to_image(init_audio)
-        inference_config = InferenceInput(init_image=init_image, **request_config)
+    init_image = audio_to_image(init_audio)
+    inference_config = InferenceInput(initImage=init_image, **request_config)
 
-        # call out to the GPU-powered inference function on Modal
-        image = Riffuser().inference.call(inference_config)
+    # call out to the GPU-powered inference function on Modal
+    image = Riffuser().inference.call(inference_config)
+    if image is None:
+        image = init_image
 
-        # convert the spectrogram image into audio
-        audio = image_to_audio(image)
+    # convert the spectrogram image into audio
+    audio = image_to_audio(image)
 
-        audio_bytes = audio_to_bytes(audio)
-        image_bytes = image_to_bytes(image)
-    else:
-        audio_bytes, image_bytes = audio_to_bytes(init_audio), []
-        # image_bytes = image_to_bytes(init_image)
+    audio_bytes = audio_to_bytes(audio)
+    image_bytes = image_to_bytes(image)
 
     # send the audio and the image to S3
     audio_url = send_to_s3(audio_bytes, filename="riff.mp3")
@@ -68,16 +68,15 @@ def inference(request_config: dict):
     # return the URLs of the audio and the image
 
     return {
-        "url": "https://riff-store.s3.us-west-2.amazonaws.com/test.mp3",
         "audioUrl": audio_url,
         "imageUrl": image_url,
     }
 
 
-# TODO: store model weights with a SharedVolume
 @stub.cls(
     image=image,
     gpu="A10G",
+    shared_volumes={str(MODEL_DIR): volume},
 )
 class Riffuser:
     def __enter__(self):
@@ -87,6 +86,7 @@ class Riffuser:
             checkpoint="riffusion/riffusion-model-v1",
             use_traced_unet=True,
             device="cuda",
+            cache_dir=MODEL_DIR,
         )
 
         self.pipe = pipe
@@ -98,16 +98,17 @@ class Riffuser:
         return image
 
 
-@stub.function(image=image)
+@stub.function(image=image, gpu="A10G")
 def image_to_audio(image):
     """Convert a spectrogram image into audio"""
-    # TODO: get spectrogram tools working
-    params = SpectrogramParams(  # noqa: F821
+    import riffuse
+
+    params = riffuse.SpectrogramParams(
         min_frequency=0,
         max_frequency=10000,
     )
 
-    converter = SpectrogramImageConverter(params=params, device="cuda")  # noqa: F821
+    converter = riffuse.SpectrogramImageConverter(params=params, device="cuda")
     audio = converter.audio_from_spectrogram_image(
         image,
         apply_filters=True,
@@ -116,11 +117,19 @@ def image_to_audio(image):
     return audio
 
 
-@stub.function(image=image)
+@stub.function(image=image, gpu="A10G")
 def audio_to_image(audio):
     """Convert audio into a spectrogram image"""
-    # TODO: get spectrogram tools working
-    image = None
+    import riffuse
+
+    params = riffuse.SpectrogramParams(
+        min_frequency=0,
+        max_frequency=10000,
+    )
+
+    converter = riffuse.SpectrogramImageConverter(params=params, device="cuda")
+    image = converter.spectrogram_image_from_audio(audio)
+
     return image
 
 
@@ -170,6 +179,8 @@ def image_to_bytes(image):
 @stub.function(image=image)
 def send_to_s3(bytes, filename=None):
     """Upload bytes to S3 and return the URL."""
+    from uuid import uuid4
+
     import boto3
     from smart_open import open
 
@@ -177,14 +188,9 @@ def send_to_s3(bytes, filename=None):
     session = boto3.Session()
     transport_params = {"client": session.client("s3")}
 
-    # TODO: use hashing to set filenames
-    if filename.endswith(".jpg"):
-        filename = "test.jpg"
-        return f"https://riff-store.s3.us-west-2.amazonaws.com/{filename}"
-    elif filename.endswith(".mp3"):
-        filename = "test2.mp3"
-    else:
-        raise ValueError(f"Unsupported filetype: {filename}")
+    # use uuid to set filenames
+    idstr = str(uuid4())[:8]
+    filename = f"-{idstr}.".join(filename.split("."))
 
     with open(
         f"s3://riff-store/{filename}", "wb", transport_params=transport_params
