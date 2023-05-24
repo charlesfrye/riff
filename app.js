@@ -1,3 +1,4 @@
+const inferenceInput = {};
 const backendUrl = "https://charlesfrye--riff.modal.run";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -50,3 +51,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
   button.addEventListener("click", runInference);
 });
+
+/* function to take user input and pass it to the backend
+  - get user input
+  - get user upload
+  - get user seed
+  - get user negative prompt (optional)
+  - get user denoise
+  - pass it to backend
+  - backend returns audio
+  - add audio to page
+
+function to call runInference, hands off state of object to JSON
+*/
+// User input for prompt
+inferenceInput.setPrompt = (text) => {
+  if (typeof text === "string" && text.trim().length > 0) {
+    inferenceInput.prompt = text;
+    console.log(inferenceInput);
+  } else {
+    console.error("Prompt must be a non-empty string");
+  }
+};
+
+// User input for seed
+inferenceInput.setSeed = (seed) => {
+  if (Number.isInteger(seed)) {
+    inferenceInput.seed = seed;
+    console.log(inferenceInput);
+  } else {
+    console.error("Input must be an integer.");
+  }
+};
+
+// User input for negative prompt (optional)
+inferenceInput.setNegativePrompt = (text) => {
+  if (typeof text === "string") {
+    if (text.length > 0) {
+      inferenceInput.negativePrompt = text;
+    } else {
+      delete inferenceInput.negativePrompt;
+      console.log("Deleted negative prompt");
+    }
+    console.log(inferenceInput);
+  } else {
+    console.error("Prompt must be a string");
+  }
+};
+
+// User input for denoising strength
+inferenceInput.setDenoise = (denoise) => {
+  const parsedFloat = Number.parseFloat(denoise);
+  if (!Number.isNaN(parsedFloat)) {
+    inferenceInput.denoise = parsedFloat;
+    console.log(inferenceInput);
+  } else {
+    console.error("Input must be a float");
+  }
+};
