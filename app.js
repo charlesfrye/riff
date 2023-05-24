@@ -117,3 +117,23 @@ inferenceInput.setInitAudio = (file) => {
     console.error("Input must be a File.");
   }
 };
+
+// eslint-disable-next-line no-unused-vars
+async function setPlaceholders() {
+  inferenceInput.setPrompt("Star Wars recorder music");
+  inferenceInput.setSeed(27);
+  inferenceInput.setNegativePrompt("Lord of the Rings Organ Music");
+  inferenceInput.setDenoise(42);
+  inferenceInput.setGuidance(7.3);
+  inferenceInput.setNumInferenceSteps(9);
+  // Open file dialog
+  const fileInput = document.querySelector("#audio-file-input");
+  fileInput.dispatchEvent(new MouseEvent("click"));
+
+  // Listen for the file input change event
+  fileInput.addEventListener("change", (event) => {
+    // When a file is selected, set it as the initial audio
+    inferenceInput.setInitAudio(event.target.files[0]);
+    console.log(inferenceInput);
+  });
+}
