@@ -77,14 +77,14 @@ inferenceInput.setNegativePrompt = (text) => {
 };
 
 // User input for denoising strength
-inferenceInput.setDenoise = (denoise) => {
-  const denoiseInput = document.querySelector("#denoise-input");
-  const parsedFloat = Number.parseFloat(denoise);
+inferenceInput.setDenoising = (denoising) => {
+  const denoisingInput = document.querySelector("#denoising-input");
+  const parsedFloat = Number.parseFloat(denoising);
   if (!Number.isNaN(parsedFloat) && parsedFloat >= 0) {
-    inferenceInput.denoise = parsedFloat;
-    denoiseInput.classList.remove("error-input");
+    inferenceInput.denoising = parsedFloat;
+    denoisingInput.classList.remove("error-input");
   } else {
-    denoiseInput.classList.add("error-input");
+    denoisingInput.classList.add("error-input");
   }
 };
 
@@ -134,7 +134,7 @@ async function setPlaceholders() {
   inferenceInput.setPrompt("Star Wars recorder music");
   inferenceInput.setSeed(27);
   inferenceInput.setNegativePrompt("Lord of the Rings Organ Music");
-  inferenceInput.setDenoise(42);
+  inferenceInput.setDenoising(42);
   inferenceInput.setGuidance(7.3);
   inferenceInput.setNumInferenceSteps(9);
   // Open file dialog
@@ -152,17 +152,17 @@ async function setPlaceholders() {
 function setDefaults() {
   // Set default values
   const defaultSeed = 117;
-  const defaultDenoise = 0.8;
+  const defaultDenoising = 0.8;
   const defaultGuidance = 7.0;
   const defaultNumInferenceSteps = 50;
   // Set inferenceInput to default values
   inferenceInput.setSeed(defaultSeed);
-  inferenceInput.setDenoise(defaultDenoise);
+  inferenceInput.setDenoising(defaultDenoising);
   inferenceInput.setGuidance(defaultGuidance);
   inferenceInput.setNumInferenceSteps(defaultNumInferenceSteps);
   // Set input box values to default values
   document.querySelector("#seed-input").value = defaultSeed;
-  document.querySelector("#denoise-input").value = defaultDenoise;
+  document.querySelector("#denoising-input").value = defaultDenoising;
   document.querySelector("#guidance-input").value = defaultGuidance;
   document.querySelector("#num-inference-steps-input").value =
     defaultNumInferenceSteps;
@@ -192,12 +192,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   document
-    .querySelector("#set-denoise-button")
+    .querySelector("#set-denoising-button")
     .addEventListener("click", () => {
-      const denoise = parseFloat(
-        document.querySelector("#denoise-input").value
+      const denoising = parseFloat(
+        document.querySelector("#denoising-input").value
       );
-      inferenceInput.setDenoise(denoise);
+      inferenceInput.setDenoising(denoising);
     });
 
   document
