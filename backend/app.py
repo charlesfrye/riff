@@ -5,6 +5,7 @@ image = (
     modal.Image.debian_slim(python_version="3.10")
     .pip_install(  # python dependencies for riffusion inference
         "accelerate",
+        "boto3",
         "diffusers>=0.9.0",
         "numpy",
         "pillow>=9.1.0",
@@ -12,6 +13,7 @@ image = (
         "pysoundfile",
         "scipy",
         "soundfile",
+        "smart_open[aws]",
         "torch",
         "torchaudio",
         "torchvision",
@@ -24,6 +26,7 @@ stub = modal.Stub(
     name="riffusion",
     secrets=[
         # this is where we add API keys, passwords, and URLs, which are stored on Modal
+        modal.Secret.from_name("aws-personal")
     ],
     mounts=[
         # we make our local modules available to the containers
@@ -40,8 +43,9 @@ def inference(request_config: dict):
     from utils import InferenceInput
 
     # parse out inference configuration from request
+    init_audio = base64_to_audio(request_config.pop("initAudio"))
+    # init_image = audio_to_image(init_audio)
     if not testing:
-        init_audio = bytes_to_audio(request_config.pop("init_audio"))
         init_image = audio_to_image(init_audio)
         inference_config = InferenceInput(init_image=init_image, **request_config)
 
@@ -54,7 +58,8 @@ def inference(request_config: dict):
         audio_bytes = audio_to_bytes(audio)
         image_bytes = image_to_bytes(image)
     else:
-        audio_bytes, image_bytes = [], []
+        audio_bytes, image_bytes = audio_to_bytes(init_audio), []
+        # image_bytes = image_to_bytes(init_image)
 
     # send the audio and the image to S3
     audio_url = send_to_s3(audio_bytes, filename="riff.mp3")
@@ -132,10 +137,22 @@ def audio_to_bytes(audio):
 
 
 @stub.function(image=image)
-def bytes_to_audio(bytes):
-    """Decode base64 bytes into pydub audio."""
-    # TODO: implement
-    pass
+def base64_to_audio(string):
+    """Decode base64 string into pydub audio."""
+    import base64
+    import io
+
+    from pydub import AudioSegment
+
+    # handle data URLs
+    if string.startswith("data:audio/"):
+        # remove the data prefix but keep the filetype, in case we need it later
+        string = string[string.index("/") :]
+        # remove the rest of the prefix from the string
+        string = string[string.index(",") + 1 :]
+
+    audio_bytes = io.BytesIO(base64.b64decode(string))
+    return AudioSegment.from_file(audio_bytes)
 
 
 @stub.function(image=image)
@@ -153,8 +170,25 @@ def image_to_bytes(image):
 @stub.function(image=image)
 def send_to_s3(bytes, filename=None):
     """Upload bytes to S3 and return the URL."""
-    # TODO: implement
+    import boto3
+    from smart_open import open
+
+    # set up AWS auth with boto3
+    session = boto3.Session()
+    transport_params = {"client": session.client("s3")}
+
     # TODO: use hashing to set filenames
     if filename.endswith(".jpg"):
-        return "https://riff-store.s3.us-west-2.amazonaws.com/test.jpg"
-    return "https://riff-store.s3.us-west-2.amazonaws.com/test.mp3"
+        filename = "test.jpg"
+        return f"https://riff-store.s3.us-west-2.amazonaws.com/{filename}"
+    elif filename.endswith(".mp3"):
+        filename = "test2.mp3"
+    else:
+        raise ValueError(f"Unsupported filetype: {filename}")
+
+    with open(
+        f"s3://riff-store/{filename}", "wb", transport_params=transport_params
+    ) as f:
+        f.write(bytes.read())
+
+    return f"https://riff-store.s3.us-west-2.amazonaws.com/{filename}"
