@@ -137,3 +137,54 @@ async function setPlaceholders() {
     console.log(inferenceInput);
   });
 }
+
+// Adding buttons
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelector("#set-prompt-button").addEventListener("click", () => {
+    const prompt = document.querySelector("#prompt-input").value;
+    console.log(`Setting prompt to: ${prompt}`);
+    inferenceInput.setPrompt(prompt);
+    console.log(`New inferenceInput: ${JSON.stringify(inferenceInput)}`);
+  });
+
+  document.querySelector("#set-seed-button").addEventListener("click", () => {
+    const seed = Number(document.querySelector("#seed-input").value);
+    inferenceInput.setSeed(seed);
+  });
+
+  document
+    .querySelector("#set-negative-prompt-button")
+    .addEventListener("click", () => {
+      const negativePrompt = document.querySelector(
+        "#negative-prompt-input"
+      ).value;
+      inferenceInput.setNegativePrompt(negativePrompt);
+    });
+
+  document
+    .querySelector("#set-denoise-button")
+    .addEventListener("click", () => {
+      const denoise = parseFloat(
+        document.querySelector("#denoise-input").value
+      );
+      inferenceInput.setDenoise(denoise);
+    });
+
+  document
+    .querySelector("#set-guidance-button")
+    .addEventListener("click", () => {
+      const guidance = parseFloat(
+        document.querySelector("#guidance-input").value
+      );
+      inferenceInput.setGuidance(guidance);
+    });
+
+  document
+    .querySelector("#set-num-inference-steps-button")
+    .addEventListener("click", () => {
+      const numInferenceSteps = Number(
+        document.querySelector("#num-inference-steps-input").value
+      );
+      inferenceInput.setNumInferenceSteps(numInferenceSteps);
+    });
+});
