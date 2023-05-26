@@ -42,7 +42,7 @@ function validateInferenceInput() {
   return true;
 }
 document.addEventListener("DOMContentLoaded", () => {
-  const button = document.querySelector("button");
+  const button = document.querySelector("send-to-charles-button");
   const body = document.querySelector("body");
   const audioFileInput = document.querySelector("#audio-file-input");
   document.querySelector("#set-prompt-button").addEventListener("click", () => {
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
     body.appendChild(audioElement);
   }
 
-  button.addEventListener("click", runInference);
+  button.addEventListener("click", runInference());
 
   audioFileInput.addEventListener("change", (event) => {
     inferenceInput.setInitAudio(event.target.files[0]);

@@ -8,7 +8,7 @@ body {
 }
 
 .error-input {
-  border: 1px solid red;
+  border: 5px solid red;
   background-color: lightpink;
 }
 
@@ -24,6 +24,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  position: relative;
   margin: auto;
   width: 60%;
   height: 60vh;
@@ -31,6 +32,12 @@ body {
   border-radius: 20px;
   background-color: burlywood;
   padding: 20px;
+}
+
+#send-to-charles-button {
+  background-color: red;
+  color: pink;
+  margin-left: 1000px;
 }
 
 .dial-container {
@@ -41,12 +48,13 @@ body {
 
 .dial-container input {
   width: 100px;
+  background-color: lightyellow;
 }
 
 .dial-container button {
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 70px;
+  height: 70px;
   background-color: brown;
 }
 
