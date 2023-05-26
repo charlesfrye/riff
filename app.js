@@ -1,14 +1,56 @@
+/* eslint-disable no-alert */
 /* eslint-disable no-console */
 const inferenceInput = {};
 const backendUrl = "https://charlesfrye--riff.modal.run";
-
+// Validate user input before sending
+function validateInferenceInput() {
+  if (!inferenceInput.prompt) {
+    alert("Prompt is missing.");
+    return false;
+  }
+  if (!Number.isInteger(inferenceInput.seed)) {
+    alert("Seed is missing or not an integer.");
+    return false;
+  }
+  if (
+    typeof inferenceInput.denoising !== "number" ||
+    inferenceInput.denoising < 0
+  ) {
+    alert("Denoising value is missing or not a positive number.");
+    return false;
+  }
+  if (
+    typeof inferenceInput.guidance !== "number" ||
+    inferenceInput.guidance < 0
+  ) {
+    alert("Guidance value is missing or not a positive number.");
+    return false;
+  }
+  if (
+    !Number.isInteger(inferenceInput.numInferenceSteps) ||
+    inferenceInput.numInferenceSteps < 0
+  ) {
+    alert(
+      "Number of Inference Steps is missing or not a non-negative integer."
+    );
+    return false;
+  }
+  if (!inferenceInput.initAudio) {
+    alert("Initial Audio is missing.");
+    return false;
+  }
+  return true;
+}
 document.addEventListener("DOMContentLoaded", () => {
   const button = document.querySelector("button");
   const body = document.querySelector("body");
   const audioFileInput = document.querySelector("#audio-file-input");
-
   async function runInference() {
-    // TODO: check that it's valid before calling the backend with fetch
+    if (!validateInferenceInput()) {
+      alert("Invalid input: Please check your input values.");
+      return;
+    }
+
     const response = await fetch(backendUrl, {
       method: "POST",
       mode: "cors",
@@ -18,9 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const responseJson = await response.json();
     // eslint-disable-next-line no-unused-vars
-    const { audioUrl, imageUrl } = responseJson;
+    const { audioUrl } = responseJson;
 
-    // add audio with controls
     const audioElement = document.createElement("audio");
     audioElement.src = audioUrl;
     audioElement.type = "audio/mpeg";
