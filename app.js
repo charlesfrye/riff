@@ -75,6 +75,11 @@ document.addEventListener("DOMContentLoaded", () => {
     body.appendChild(audioElement);
   }
 
+  button.addEventListener("click", () => {
+    button.classList.add("bounce");
+    setTimeout(() => button.classList.remove("bounce"), 400);
+  });
+
   button.addEventListener("click", runInference());
 
   audioFileInput.addEventListener("change", (event) => {
@@ -308,3 +313,13 @@ document
     );
     inferenceInput.setNumInferenceSteps(numInferenceSteps);
   });
+
+// Adding rotation to dials
+const dials = document.querySelectorAll(".dial-container button");
+
+dials.forEach((dial) => {
+  dial.addEventListener("click", () => {
+    dial.classList.add("rotate");
+    setTimeout(() => dial.classList.remove("rotate"), 2000);
+  });
+});
