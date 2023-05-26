@@ -45,6 +45,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const button = document.querySelector("button");
   const body = document.querySelector("body");
   const audioFileInput = document.querySelector("#audio-file-input");
+  document.querySelector("#set-prompt-button").addEventListener("click", () => {
+    const prompt = document.querySelector("#prompt-input").value;
+    document.querySelector(".prompt-display").innerText = prompt;
+  });
+
   async function runInference() {
     if (!validateInferenceInput()) {
       alert("Invalid input: Please check your input values.");
@@ -60,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const responseJson = await response.json();
     // eslint-disable-next-line no-unused-vars
-    const { audioUrl } = responseJson;
+    const { audioUrl, imageUrl } = responseJson;
 
     const audioElement = document.createElement("audio");
     audioElement.src = audioUrl;
@@ -260,3 +265,46 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   setDefaults();
 });
+
+// Setting inference input buttons
+document.querySelector("#set-prompt-button").addEventListener("click", () => {
+  const prompt = document.querySelector("#prompt-input").value;
+  inferenceInput.setPrompt(prompt);
+});
+
+document.querySelector("#set-seed-button").addEventListener("click", () => {
+  const seed = Number(document.querySelector("#seed-input").value);
+  inferenceInput.setSeed(seed);
+});
+
+document
+  .querySelector("#set-negative-prompt-button")
+  .addEventListener("click", () => {
+    const negativePrompt = document.querySelector(
+      "#negative-prompt-input"
+    ).value;
+    inferenceInput.setNegativePrompt(negativePrompt);
+  });
+
+document
+  .querySelector("#set-denoising-button")
+  .addEventListener("click", () => {
+    const denoising = parseFloat(
+      document.querySelector("#denoising-input").value
+    );
+    inferenceInput.setDenoising(denoising);
+  });
+
+document.querySelector("#set-guidance-button").addEventListener("click", () => {
+  const guidance = parseFloat(document.querySelector("#guidance-input").value);
+  inferenceInput.setGuidance(guidance);
+});
+
+document
+  .querySelector("#set-num-inference-steps-button")
+  .addEventListener("click", () => {
+    const numInferenceSteps = Number(
+      document.querySelector("#num-inference-steps-input").value
+    );
+    inferenceInput.setNumInferenceSteps(numInferenceSteps);
+  });
