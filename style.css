@@ -44,9 +44,11 @@ body {
   0% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(15px);
   }
+
   100% {
     transform: translateY(0);
   }
@@ -80,13 +82,28 @@ body {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
 
 .rotate {
-  animation: rotate 2s linear;
+  animation: rotate 1s linear;
+}
+
+@keyframes reverse-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.reverse-rotate {
+  animation: reverse-rotate 1s linear;
 }
 
 .prompt-display {

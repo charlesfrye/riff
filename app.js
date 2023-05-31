@@ -236,6 +236,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#set-seed-button").addEventListener("click", () => {
     const seed = Number(document.querySelector("#seed-input").value);
     inferenceInput.setSeed(seed);
+
+    const button = document.querySelector("#set-seed-button");
+    button.classList.add("rotate");
+    setTimeout(() => button.classList.remove("rotate"), 1000);
   });
 
   document
@@ -254,6 +258,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector("#denoising-input").value
       );
       inferenceInput.setDenoising(denoising);
+
+      const button = document.querySelector("#set-denoising-button");
+      button.classList.add("reverse-rotate");
+      setTimeout(() => button.classList.remove("reverse-rotate"), 1000);
     });
 
   document
@@ -263,6 +271,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector("#guidance-input").value
       );
       inferenceInput.setGuidance(guidance);
+
+      const button = document.querySelector("#set-guidance-button");
+      button.classList.add("rotate");
+      setTimeout(() => button.classList.remove("rotate"), 1000);
     });
 
   document
@@ -272,6 +284,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector("#num-inference-steps-input").value
       );
       inferenceInput.setNumInferenceSteps(numInferenceSteps);
+
+      const button = document.querySelector("#set-num-inference-steps-button");
+      button.classList.add("reverse-rotate");
+      setTimeout(() => button.classList.remove("reverse-rotate"), 1000);
     });
 });
 
@@ -324,6 +340,7 @@ const dials = document.querySelectorAll(".dial-container button");
 dials.forEach((dial) => {
   dial.addEventListener("click", () => {
     dial.classList.add("rotate");
+    console.log("Rotation!");
     setTimeout(() => dial.classList.remove("rotate"), 2000);
   });
 });
