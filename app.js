@@ -2,6 +2,29 @@
 /* eslint-disable no-console */
 const inferenceInput = {};
 const backendUrl = "https://charlesfrye--riff.modal.run";
+// Setting the default values
+function setDefaults() {
+  // Set default values
+  const defaultPrompt = "2000s techno remix";
+  const defaultSeed = 117;
+  const defaultDenoising = 0.8;
+  const defaultGuidance = 7.0;
+  const defaultNumInferenceSteps = 50;
+  // Set inferenceInput to default values
+  inferenceInput.setPrompt(defaultPrompt);
+  inferenceInput.setSeed(defaultSeed);
+  inferenceInput.setDenoising(defaultDenoising);
+  inferenceInput.setGuidance(defaultGuidance);
+  inferenceInput.setNumInferenceSteps(defaultNumInferenceSteps);
+  // Set input box values to default values
+  document.querySelector("#prompt-input").value = defaultPrompt;
+  document.querySelector("#seed-input").value = defaultSeed;
+  document.querySelector("#denoising-input").value = defaultDenoising;
+  document.querySelector("#guidance-input").value = defaultGuidance;
+  document.querySelector("#num-inference-steps-input").value =
+    defaultNumInferenceSteps;
+}
+
 // Validate user input before sending
 function validateInferenceInput() {
   if (!inferenceInput.prompt) {
@@ -42,7 +65,8 @@ function validateInferenceInput() {
   return true;
 }
 document.addEventListener("DOMContentLoaded", () => {
-  const button = document.querySelector("send-to-charles-button");
+  setDefaults();
+  const button = document.querySelector("#send-to-charles-button");
   const body = document.querySelector("body");
   const audioFileInput = document.querySelector("#audio-file-input");
   document.querySelector("#set-prompt-button").addEventListener("click", () => {
@@ -80,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => button.classList.remove("bounce"), 400);
   });
 
-  button.addEventListener("click", runInference());
+  button.addEventListener("click", runInference);
 
   audioFileInput.addEventListener("change", (event) => {
     inferenceInput.setInitAudio(event.target.files[0]);
@@ -200,25 +224,6 @@ async function setPlaceholders() {
   });
 }
 
-function setDefaults() {
-  // Set default values
-  const defaultSeed = 117;
-  const defaultDenoising = 0.8;
-  const defaultGuidance = 7.0;
-  const defaultNumInferenceSteps = 50;
-  // Set inferenceInput to default values
-  inferenceInput.setSeed(defaultSeed);
-  inferenceInput.setDenoising(defaultDenoising);
-  inferenceInput.setGuidance(defaultGuidance);
-  inferenceInput.setNumInferenceSteps(defaultNumInferenceSteps);
-  // Set input box values to default values
-  document.querySelector("#seed-input").value = defaultSeed;
-  document.querySelector("#denoising-input").value = defaultDenoising;
-  document.querySelector("#guidance-input").value = defaultGuidance;
-  document.querySelector("#num-inference-steps-input").value =
-    defaultNumInferenceSteps;
-}
-
 // Adding buttons
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#set-prompt-button").addEventListener("click", () => {
@@ -268,7 +273,6 @@ document.addEventListener("DOMContentLoaded", () => {
       );
       inferenceInput.setNumInferenceSteps(numInferenceSteps);
     });
-  setDefaults();
 });
 
 // Setting inference input buttons
