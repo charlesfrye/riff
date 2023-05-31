@@ -1,6 +1,7 @@
 * {
   margin: 0;
   padding: 0;
+  background-color: antiquewhite;
 }
 
 body {
@@ -27,17 +28,23 @@ body {
   position: relative;
   margin: auto;
   width: 60%;
-  height: 60vh;
+  height: 20vh;
   border: 2px solid black;
-  border-radius: 20px;
-  background-color: burlywood;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  background-color: #8b4917;
   padding: 20px;
+  background-image: linear-gradient(200deg, #e7a16c, 1%, transparent 10%),
+    linear-gradient(2deg, #291607, 3%, transparent 10%);
 }
 
 #send-to-charles-button {
   background-color: red;
+  padding: 5px;
   color: pink;
-  margin-left: 1000px;
+  margin-left: 800px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 @keyframes bounce {
@@ -62,10 +69,13 @@ body {
   display: flex;
   justify-content: space-around;
   width: 100%;
+  background-color: transparent;
 }
 
 .dial-container input {
-  width: 100px;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: 40px;
+  width: 70px;
   background-color: lightyellow;
 }
 
@@ -73,11 +83,13 @@ body {
   border-radius: 50%;
   width: 70px;
   height: 70px;
+  padding: 5px;
   background-color: brown;
-  background-image: linear-gradient(180deg, white 50%, transparent 50%);
+  background-image: linear-gradient(200deg, white 10%, transparent 50%);
   background-repeat: no-repeat;
 }
 
+/* Rotation Animations */
 @keyframes rotate {
   0% {
     transform: rotate(0deg);
@@ -113,8 +125,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2em;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: 50px;
+  white-space: nowrap;
+  overflow: scroll;
+  text-overflow: scroll;
   padding: 10px;
+  background-color: lightyellow;
+  background-image: linear-gradient(200deg, white 1%, transparent 15%),
+    linear-gradient(2deg, white 1%, transparent 10%);
+  background-repeat: no-repeat;
 }
 
 .bottom-section {
