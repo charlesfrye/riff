@@ -4,6 +4,7 @@
 /* eslint-disable no-console */
 const inferenceInput = {};
 const backendUrl = "https://charlesfrye--riff.modal.run";
+
 // Setting the default values
 function setDefaults() {
   // Set default values
@@ -71,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const button = document.querySelector("#send-to-charles-button");
   const body = document.querySelector("#waveform");
   const audioFileInput = document.querySelector("#audio-file-input");
+
   document.querySelector("#set-prompt-button").addEventListener("click", () => {
     const prompt = document.querySelector("#prompt-input").value;
     document.querySelector(".prompt-display").innerText = prompt;
@@ -84,6 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Invalid input: Please check your input values.");
       return;
     }
+
 
     // Loading Bar
     const loadingBar = document.getElementById("loading-bar");
