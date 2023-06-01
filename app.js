@@ -1,7 +1,33 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-plusplus */
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
 const inferenceInput = {};
 const backendUrl = "https://charlesfrye--riff.modal.run";
+
+// Setting the default values
+function setDefaults() {
+  // Set default values
+  const defaultPrompt = "2000s techno remix";
+  const defaultSeed = 117;
+  const defaultDenoising = 0.8;
+  const defaultGuidance = 7.0;
+  const defaultNumInferenceSteps = 50;
+  // Set inferenceInput to default values
+  inferenceInput.setPrompt(defaultPrompt);
+  inferenceInput.setSeed(defaultSeed);
+  inferenceInput.setDenoising(defaultDenoising);
+  inferenceInput.setGuidance(defaultGuidance);
+  inferenceInput.setNumInferenceSteps(defaultNumInferenceSteps);
+  // Set input box values to default values
+  document.querySelector("#prompt-input").value = defaultPrompt;
+  document.querySelector("#seed-input").value = defaultSeed;
+  document.querySelector("#denoising-input").value = defaultDenoising;
+  document.querySelector("#guidance-input").value = defaultGuidance;
+  document.querySelector("#num-inference-steps-input").value =
+    defaultNumInferenceSteps;
+}
+
 // Validate user input before sending
 function validateInferenceInput() {
   if (!inferenceInput.prompt) {
@@ -42,35 +68,96 @@ function validateInferenceInput() {
   return true;
 }
 document.addEventListener("DOMContentLoaded", () => {
-  const button = document.querySelector("button");
-  const body = document.querySelector("body");
+  setDefaults();
+  const button = document.querySelector("#send-to-charles-button");
+  const body = document.querySelector("#waveform");
   const audioFileInput = document.querySelector("#audio-file-input");
+
+  document.querySelector("#set-prompt-button").addEventListener("click", () => {
+    const prompt = document.querySelector("#prompt-input").value;
+    document.querySelector(".prompt-display").innerText = prompt;
+  });
+  // Loading bar id
+  // eslint-disable-next-line no-unused-vars
+  let id;
+
   async function runInference() {
     if (!validateInferenceInput()) {
       alert("Invalid input: Please check your input values.");
       return;
     }
 
-    const response = await fetch(backendUrl, {
-      method: "POST",
-      mode: "cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(inferenceInput),
-    });
 
-    const responseJson = await response.json();
-    // eslint-disable-next-line no-unused-vars
-    const { audioUrl } = responseJson;
+    // Loading Bar
+    const loadingBar = document.getElementById("loading-bar");
+    let width = 1;
+    function frame() {
+      if (width >= 100) {
+        width = 1;
+      } else {
+        width++;
+        loadingBar.style.width = `${width}%`;
+      }
+    }
+    id = setInterval(frame, 1200);
+    try {
+      const response = await fetch(backendUrl, {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(inferenceInput),
+      });
 
-    const audioElement = document.createElement("audio");
-    audioElement.src = audioUrl;
-    audioElement.type = "audio/mpeg";
-    audioElement.controls = true;
+      const responseJson = await response.json();
+      const { audioUrl, imageUrl } = responseJson;
 
-    body.appendChild(audioElement);
+      const existingImage = document.getElementById("result-image");
+      if (existingImage) {
+        existingImage.remove();
+      }
+      const imageElement = document.createElement("img");
+      imageElement.id = "result-image";
+      imageElement.src = imageUrl;
+      imageElement.alt = "Generated waveform";
+      imageElement.width = 75;
+      imageElement.height = 75;
+      imageElement.style = "margin-top: 2px; margin-bottom: 2px;";
+      body.appendChild(imageElement);
+
+      // Get the audio element and remove it if it already exists
+      const existingAudio = document.getElementById("result-audio");
+      if (existingAudio) {
+        existingAudio.remove();
+      }
+      const audioElement = document.createElement("audio");
+      audioElement.id = "result-audio";
+      audioElement.src = audioUrl;
+      audioElement.type = "audio/mpeg";
+      audioElement.controls = true;
+      audioElement.style = "margin-top: 2px; margin-bottom: 10px;";
+
+      body.appendChild(audioElement);
+
+      // Stop the loading bar when processing is done
+      clearInterval(id);
+
+      document.getElementById("loading-bar").style.width = "0%";
+    } catch (err) {
+      console.error("An error occurred:", err);
+      // Stop the loading bar if an error occurs
+      clearInterval(id);
+
+      // Reset loading bar
+      document.getElementById("loading-bar").style.width = "0%";
+    }
   }
 
-  button.addEventListener("click", runInference);
+  button.addEventListener("click", () => {
+    button.classList.add("bounce");
+    setTimeout(() => button.classList.remove("bounce"), 400);
+
+    runInference();
+  });
 
   audioFileInput.addEventListener("change", (event) => {
     inferenceInput.setInitAudio(event.target.files[0]);
@@ -190,25 +277,6 @@ async function setPlaceholders() {
   });
 }
 
-function setDefaults() {
-  // Set default values
-  const defaultSeed = 117;
-  const defaultDenoising = 0.8;
-  const defaultGuidance = 7.0;
-  const defaultNumInferenceSteps = 50;
-  // Set inferenceInput to default values
-  inferenceInput.setSeed(defaultSeed);
-  inferenceInput.setDenoising(defaultDenoising);
-  inferenceInput.setGuidance(defaultGuidance);
-  inferenceInput.setNumInferenceSteps(defaultNumInferenceSteps);
-  // Set input box values to default values
-  document.querySelector("#seed-input").value = defaultSeed;
-  document.querySelector("#denoising-input").value = defaultDenoising;
-  document.querySelector("#guidance-input").value = defaultGuidance;
-  document.querySelector("#num-inference-steps-input").value =
-    defaultNumInferenceSteps;
-}
-
 // Adding buttons
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#set-prompt-button").addEventListener("click", () => {
@@ -221,6 +289,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#set-seed-button").addEventListener("click", () => {
     const seed = Number(document.querySelector("#seed-input").value);
     inferenceInput.setSeed(seed);
+
+    const button = document.querySelector("#set-seed-button");
+    button.classList.add("rotate");
+    setTimeout(() => button.classList.remove("rotate"), 1000);
   });
 
   document
@@ -239,6 +311,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector("#denoising-input").value
       );
       inferenceInput.setDenoising(denoising);
+
+      const button = document.querySelector("#set-denoising-button");
+      button.classList.add("reverse-rotate");
+      setTimeout(() => button.classList.remove("reverse-rotate"), 1000);
     });
 
   document
@@ -248,6 +324,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector("#guidance-input").value
       );
       inferenceInput.setGuidance(guidance);
+
+      const button = document.querySelector("#set-guidance-button");
+      button.classList.add("rotate");
+      setTimeout(() => button.classList.remove("rotate"), 1000);
     });
 
   document
@@ -257,6 +337,63 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector("#num-inference-steps-input").value
       );
       inferenceInput.setNumInferenceSteps(numInferenceSteps);
+
+      const button = document.querySelector("#set-num-inference-steps-button");
+      button.classList.add("reverse-rotate");
+      setTimeout(() => button.classList.remove("reverse-rotate"), 1000);
     });
-  setDefaults();
+});
+
+// Setting inference input buttons
+document.querySelector("#set-prompt-button").addEventListener("click", () => {
+  const prompt = document.querySelector("#prompt-input").value;
+  inferenceInput.setPrompt(prompt);
+});
+
+document.querySelector("#set-seed-button").addEventListener("click", () => {
+  const seed = Number(document.querySelector("#seed-input").value);
+  inferenceInput.setSeed(seed);
+});
+
+document
+  .querySelector("#set-negative-prompt-button")
+  .addEventListener("click", () => {
+    const negativePrompt = document.querySelector(
+      "#negative-prompt-input"
+    ).value;
+    inferenceInput.setNegativePrompt(negativePrompt);
+  });
+
+document
+  .querySelector("#set-denoising-button")
+  .addEventListener("click", () => {
+    const denoising = parseFloat(
+      document.querySelector("#denoising-input").value
+    );
+    inferenceInput.setDenoising(denoising);
+  });
+
+document.querySelector("#set-guidance-button").addEventListener("click", () => {
+  const guidance = parseFloat(document.querySelector("#guidance-input").value);
+  inferenceInput.setGuidance(guidance);
+});
+
+document
+  .querySelector("#set-num-inference-steps-button")
+  .addEventListener("click", () => {
+    const numInferenceSteps = Number(
+      document.querySelector("#num-inference-steps-input").value
+    );
+    inferenceInput.setNumInferenceSteps(numInferenceSteps);
+  });
+
+// Adding rotation to dials
+const dials = document.querySelectorAll(".dial-container button");
+
+dials.forEach((dial) => {
+  dial.addEventListener("click", () => {
+    dial.classList.add("rotate");
+    console.log("Rotation!");
+    setTimeout(() => dial.classList.remove("rotate"), 2000);
+  });
 });

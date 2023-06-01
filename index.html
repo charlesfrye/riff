@@ -6,46 +6,52 @@
     <link rel="stylesheet" href="style.css" />
     <script src="app.js"></script>
   </head>
-  <body style="display: flex; flex-direction: column; width: 30%">
-    <button>Send it to Charles!</button>
-    <input id="audio-file-input" type="file" accept="audio/*" />
-    <div id="waveform"></div>
-    <input id="prompt-input" type="text" placeholder="Prompt" />
-    <button id="set-prompt-button">Set Prompt</button>
+  <body>
+    <div class="top-section">
+      <input id="audio-file-input" type="file" accept="audio/*" />
+      <input id="prompt-input" type="text" placeholder="Prompt" />
+      <button id="set-prompt-button">Set Prompt</button>
+      <input
+        id="negative-prompt-input"
+        type="text"
+        placeholder="Negative Prompt"
+      />
+      <button id="set-negative-prompt-button">Set Negative Prompt</button>
+    </div>
+    <button id="send-to-charles-button">Send to Charles!</button>
+    <div class="radio-container">
+      <div id="waveform"></div>
+      <div class="prompt-display"></div>
+      <div class="dial-container">
+        <input id="seed-input" type="number" placeholder="Seed" />
+        <button id="set-seed-button">Set Seed</button>
 
-    <input id="seed-input" type="number" placeholder="Seed" />
-    <button id="set-seed-button">Set Seed</button>
+        <input
+          id="denoising-input"
+          type="number"
+          step="0.1"
+          placeholder="Denoising"
+        />
+        <button id="set-denoising-button">Set Denoising</button>
+        <input
+          id="guidance-input"
+          type="number"
+          step="0.1"
+          placeholder="Guidance"
+        />
+        <button id="set-guidance-button">Set Guidance</button>
 
-    <input
-      id="negative-prompt-input"
-      type="text"
-      placeholder="Negative Prompt"
-    />
-    <button id="set-negative-prompt-button">Set Negative Prompt</button>
-
-    <input
-      id="denoising-input"
-      type="number"
-      step="0.1"
-      placeholder="Denoising"
-    />
-    <button id="set-denoising-button">Set Denoising</button>
-
-    <input
-      id="guidance-input"
-      type="number"
-      step="0.1"
-      placeholder="Guidance"
-    />
-    <button id="set-guidance-button">Set Guidance</button>
-
-    <input
-      id="num-inference-steps-input"
-      type="number"
-      placeholder="Number of Inference Steps"
-    />
-    <button id="set-num-inference-steps-button">
-      Set Number of Inference Steps
-    </button>
+        <input
+          id="num-inference-steps-input"
+          type="number"
+          placeholder="Number of Inference Steps"
+        />
+        <button id="set-num-inference-steps-button">Set Inference Steps</button>
+      </div>
+    </div>
+    <div class="bottom-section"></div>
+    <div id="loading-bar-container">
+      <div id="loading-bar">Loading...</div>
+    </div>
   </body>
 </html>

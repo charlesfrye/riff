@@ -1,14 +1,187 @@
 * {
   margin: 0;
-  padding: 0;
+  background-color: antiquewhite;
 }
 
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
 }
 
-/* CSS */
 .error-input {
-  border: 1px solid red;
+  border: 3px solid red;
   background-color: lightpink;
+}
+
+.top-section {
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  padding: 40px;
+  background-color: lightgrey;
+}
+
+.radio-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin: auto;
+  width: 60%;
+  height: 20vh;
+  border: 2px solid black;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  background-color: #8b4917;
+  padding: 20px;
+  background-image: linear-gradient(200deg, #e7a16c, 1%, transparent 10%),
+    linear-gradient(180deg, #e7a16c, 1%, transparent 10%),
+    linear-gradient(2deg, #291607, 3%, transparent 10%);
+}
+
+#send-to-charles-button {
+  position: absolute;
+  top: 75px;
+  right: 500px;
+  background-color: red;
+  padding: 5px;
+  color: pink;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(15px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.bounce {
+  animation: bounce 0.4s;
+}
+
+.dial-container {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  background-color: transparent;
+}
+
+.dial-container input {
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: 40px;
+  width: 70px;
+  background-color: lightyellow;
+}
+
+.dial-container button {
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  padding: 5px;
+  background-color: brown;
+  background-image: linear-gradient(200deg, white 8%, transparent 30%);
+  background-repeat: no-repeat;
+}
+
+/* Rotation Animations */
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.rotate {
+  animation: rotate 1s linear;
+}
+
+@keyframes reverse-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.reverse-rotate {
+  animation: reverse-rotate 1s linear;
+}
+
+.prompt-display {
+  gap: 10px;
+  border: 1px solid black;
+  width: 80%;
+  height: 20%;
+  align-items: center;
+  justify-content: center;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: 50px;
+  white-space: nowrap;
+  overflow: scroll;
+  text-overflow: scroll;
+  padding: 10px;
+  display: grid;
+  background-image: linear-gradient(
+      0deg,
+      transparent 24%,
+      rgb(0 0 0 / 50%) 25%,
+      rgb(0 0 0 / 50%) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgb(0 0 0 / 50%) 75%,
+      rgb(0 0 0 / 50%) 76%,
+      transparent 77%,
+      transparent
+    ),
+    linear-gradient(
+      90deg,
+      transparent 24%,
+      rgb(0 0 0 / 50%) 25%,
+      rgb(0 0 0 / 50%) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgb(0 0 0 / 50%) 75%,
+      rgb(0 0 0 / 50%) 76%,
+      transparent 77%,
+      transparent
+    );
+  background-size: 50px 50px;
+}
+
+.bottom-section {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  background-color: lightgrey;
+}
+
+/* Loading Bar */
+#loading-bar {
+  width: 0;
+  height: 20px;
+  padding: 0;
+  background-color: #4caf50;
+  text-align: center;
+  line-height: 20px;
+  color: lightgrey;
+  margin-left: 10px;
+}
+
+#loading-bar-container {
+  width: 100%;
+  background-color: lightgrey;
 }
