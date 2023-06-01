@@ -21,6 +21,7 @@
     <button id="send-to-charles-button">Send to Charles!</button>
     <div class="radio-container">
       <div id="waveform"></div>
+      <div class="prompt-display"></div>
       <div class="dial-container">
         <input id="seed-input" type="number" placeholder="Seed" />
         <button id="set-seed-button">Set Seed</button>
@@ -32,7 +33,6 @@
           placeholder="Denoising"
         />
         <button id="set-denoising-button">Set Denoising</button>
-        <br />
         <input
           id="guidance-input"
           type="number"
@@ -48,8 +48,10 @@
         />
         <button id="set-num-inference-steps-button">Set Inference Steps</button>
       </div>
-      <div class="prompt-display"></div>
     </div>
     <div class="bottom-section"></div>
+    <div id="loading-bar-container">
+      <div id="loading-bar">Loading...</div>
+    </div>
   </body>
 </html>

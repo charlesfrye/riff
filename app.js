@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-plusplus */
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
 const inferenceInput = {};
@@ -67,12 +69,15 @@ function validateInferenceInput() {
 document.addEventListener("DOMContentLoaded", () => {
   setDefaults();
   const button = document.querySelector("#send-to-charles-button");
-  const body = document.querySelector("body");
+  const body = document.querySelector("#waveform");
   const audioFileInput = document.querySelector("#audio-file-input");
   document.querySelector("#set-prompt-button").addEventListener("click", () => {
     const prompt = document.querySelector("#prompt-input").value;
     document.querySelector(".prompt-display").innerText = prompt;
   });
+  // Loading bar id
+  // eslint-disable-next-line no-unused-vars
+  let id;
 
   async function runInference() {
     if (!validateInferenceInput()) {
@@ -80,31 +85,60 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const response = await fetch(backendUrl, {
-      method: "POST",
-      mode: "cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(inferenceInput),
-    });
+    // Loading Bar
+    const loadingBar = document.getElementById("loading-bar");
+    let width = 1;
+    function frame() {
+      if (width >= 100) {
+        width = 1;
+      } else {
+        width++;
+        loadingBar.style.width = `${width}%`;
+      }
+    }
+    id = setInterval(frame, 1200);
+    try {
+      const response = await fetch(backendUrl, {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(inferenceInput),
+      });
 
-    const responseJson = await response.json();
-    // eslint-disable-next-line no-unused-vars
-    const { audioUrl, imageUrl } = responseJson;
+      const responseJson = await response.json();
+      const { audioUrl, imageUrl } = responseJson;
+      const existingAudio = document.getElementById("result-audio");
+      if (existingAudio) {
+        existingAudio.remove();
+      }
+      const audioElement = document.createElement("audio");
+      audioElement.id = "result-audio";
+      audioElement.src = audioUrl;
+      audioElement.type = "audio/mpeg";
+      audioElement.controls = true;
 
-    const audioElement = document.createElement("audio");
-    audioElement.src = audioUrl;
-    audioElement.type = "audio/mpeg";
-    audioElement.controls = true;
+      body.appendChild(audioElement);
 
-    body.appendChild(audioElement);
+      // Stop the loading bar when processing is done
+      clearInterval(id);
+
+      document.getElementById("loading-bar").style.width = "0%";
+    } catch (err) {
+      console.error("An error occurred:", err);
+      // Stop the loading bar if an error occurs
+      clearInterval(id);
+
+      // Reset loading bar
+      document.getElementById("loading-bar").style.width = "0%";
+    }
   }
 
   button.addEventListener("click", () => {
     button.classList.add("bounce");
     setTimeout(() => button.classList.remove("bounce"), 400);
-  });
 
-  button.addEventListener("click", runInference);
+    runInference();
+  });
 
   audioFileInput.addEventListener("change", (event) => {
     inferenceInput.setInitAudio(event.target.files[0]);
