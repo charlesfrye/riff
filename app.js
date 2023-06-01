@@ -107,6 +107,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const responseJson = await response.json();
       const { audioUrl, imageUrl } = responseJson;
+
+      const existingImage = document.getElementById("result-image");
+      if (existingImage) {
+        existingImage.remove();
+      }
+      const imageElement = document.createElement("img");
+      imageElement.id = "result-image";
+      imageElement.src = imageUrl;
+      imageElement.alt = "Generated waveform";
+      imageElement.width = 75;
+      imageElement.height = 75;
+      imageElement.style = "margin-top: 2px; margin-bottom: 2px;";
+      body.appendChild(imageElement);
+
+      // Get the audio element and remove it if it already exists
       const existingAudio = document.getElementById("result-audio");
       if (existingAudio) {
         existingAudio.remove();
@@ -116,6 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
       audioElement.src = audioUrl;
       audioElement.type = "audio/mpeg";
       audioElement.controls = true;
+      audioElement.style = "margin-top: 2px; margin-bottom: 10px;";
 
       body.appendChild(audioElement);
 
