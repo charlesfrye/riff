@@ -342,5 +342,58 @@ document.addEventListener("DOMContentLoaded", () => {
       button.classList.add("reverse-rotate");
       setTimeout(() => button.classList.remove("reverse-rotate"), 1000);
     });
+});
+
+// Setting inference input buttons
+document.querySelector("#set-prompt-button").addEventListener("click", () => {
+  const prompt = document.querySelector("#prompt-input").value;
+  inferenceInput.setPrompt(prompt);
+});
+
+document.querySelector("#set-seed-button").addEventListener("click", () => {
+  const seed = Number(document.querySelector("#seed-input").value);
+  inferenceInput.setSeed(seed);
+});
+
+document
+  .querySelector("#set-negative-prompt-button")
+  .addEventListener("click", () => {
+    const negativePrompt = document.querySelector(
+      "#negative-prompt-input"
+    ).value;
+    inferenceInput.setNegativePrompt(negativePrompt);
+  });
+
+document
+  .querySelector("#set-denoising-button")
+  .addEventListener("click", () => {
+    const denoising = parseFloat(
+      document.querySelector("#denoising-input").value
+    );
+    inferenceInput.setDenoising(denoising);
+  });
+
+document.querySelector("#set-guidance-button").addEventListener("click", () => {
+  const guidance = parseFloat(document.querySelector("#guidance-input").value);
+  inferenceInput.setGuidance(guidance);
+});
+
+document
+  .querySelector("#set-num-inference-steps-button")
+  .addEventListener("click", () => {
+    const numInferenceSteps = Number(
+      document.querySelector("#num-inference-steps-input").value
+    );
+    inferenceInput.setNumInferenceSteps(numInferenceSteps);
+  });
+
+// Adding rotation to dials
+const dials = document.querySelectorAll(".dial-container button");
+
+dials.forEach((dial) => {
+  dial.addEventListener("click", () => {
+    dial.classList.add("rotate");
+    console.log("Rotation!");
+    setTimeout(() => dial.classList.remove("rotate"), 2000);
   });
 });
