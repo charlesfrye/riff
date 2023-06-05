@@ -170,7 +170,6 @@ inferenceInput.setPrompt = (text) => {
   } else {
     delete inferenceInput.prompt;
     promptInput.classList.add("error-input");
-    console.log("Invalid input: Please enter a non-empty string value.");
   }
 };
 
@@ -270,7 +269,6 @@ async function setPlaceholders() {
   fileInput.addEventListener("change", (event) => {
     // When a file is selected, set it as the initial audio
     inferenceInput.setInitAudio(event.target.files[0]);
-    console.log(inferenceInput);
   });
 }
 
@@ -278,9 +276,7 @@ async function setPlaceholders() {
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#set-prompt-button").addEventListener("click", () => {
     const prompt = document.querySelector("#prompt-input").value;
-    console.log(`Setting prompt to: ${prompt}`);
     inferenceInput.setPrompt(prompt);
-    console.log(`New inferenceInput: ${JSON.stringify(inferenceInput)}`);
   });
 
   document.querySelector("#set-seed-button").addEventListener("click", () => {
@@ -390,7 +386,6 @@ const dials = document.querySelectorAll(".dial-container button");
 dials.forEach((dial) => {
   dial.addEventListener("click", () => {
     dial.classList.add("rotate");
-    console.log("Rotation!");
     setTimeout(() => dial.classList.remove("rotate"), 2000);
   });
 });
