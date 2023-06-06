@@ -4,7 +4,6 @@
 /* eslint-disable no-console */
 const inferenceInput = {};
 const backendUrl = "https://charlesfrye--riff.modal.run";
-
 // Setting the default values
 function setDefaults() {
   // Set default values
@@ -72,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const button = document.querySelector("#send-to-charles-button");
   const body = document.querySelector("#waveform");
   const audioFileInput = document.querySelector("#audio-file-input");
-
   document.querySelector("#set-prompt-button").addEventListener("click", () => {
     const prompt = document.querySelector("#prompt-input").value;
     document.querySelector(".prompt-display").innerText = prompt;
@@ -86,7 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Invalid input: Please check your input values.");
       return;
     }
-
 
     // Loading Bar
     const loadingBar = document.getElementById("loading-bar");
@@ -173,7 +170,6 @@ inferenceInput.setPrompt = (text) => {
   } else {
     delete inferenceInput.prompt;
     promptInput.classList.add("error-input");
-    console.log("Invalid input: Please enter a non-empty string value.");
   }
 };
 
@@ -273,7 +269,6 @@ async function setPlaceholders() {
   fileInput.addEventListener("change", (event) => {
     // When a file is selected, set it as the initial audio
     inferenceInput.setInitAudio(event.target.files[0]);
-    console.log(inferenceInput);
   });
 }
 
@@ -281,9 +276,7 @@ async function setPlaceholders() {
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#set-prompt-button").addEventListener("click", () => {
     const prompt = document.querySelector("#prompt-input").value;
-    console.log(`Setting prompt to: ${prompt}`);
     inferenceInput.setPrompt(prompt);
-    console.log(`New inferenceInput: ${JSON.stringify(inferenceInput)}`);
   });
 
   document.querySelector("#set-seed-button").addEventListener("click", () => {
@@ -393,7 +386,6 @@ const dials = document.querySelectorAll(".dial-container button");
 dials.forEach((dial) => {
   dial.addEventListener("click", () => {
     dial.classList.add("rotate");
-    console.log("Rotation!");
     setTimeout(() => dial.classList.remove("rotate"), 2000);
   });
 });
